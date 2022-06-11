@@ -7,7 +7,7 @@ import { Avatar, Button, IconButton } from '@material-ui/core';
 import { AddToPhotos } from '@material-ui/icons';
 import firebase from 'firebase/app';
 
-const TweetInput = () => {
+const TweetInput: React.FC = () => {
   const user = useSelector(selectUser);
   const [tweetImage, setTweetImage] = useState<File | null>(null);
   const [tweetMsg, setTweetMeg] = useState('');
@@ -66,15 +66,48 @@ const TweetInput = () => {
   };
 
   return (
-    <div>
-      <Avatar
-        className={styles.tweet_avatar}
-        src={user.photoUrl}
-        onClick={async () => {
-          await auth.signOut();
-        }}
-      />
-    </div>
+    <>
+      <form onSubmit={sendTweet}>
+        <div className={styles.tweet_form}>
+          <Avatar
+            className={styles.tweet_avatar}
+            src={user.photoUrl}
+            onClick={async () => {
+              await auth.signOut();
+            }}
+          />
+          <input
+            className={styles.tweet_input}
+            placeholder="what's happen?"
+            type='text'
+            autoFocus
+            value={tweetMsg}
+            onChange={(e) => setTweetMeg(e.target.value)}
+          />
+          <IconButton>
+            <label>
+              <AddToPhotos
+                className={
+                  tweetImage ? styles.tweet_addIconLoaded : styles.tweet_addIcon
+                }
+              />
+              <input
+                className={styles.tweet_hiddenIcon}
+                type='file'
+                onChange={onChangeImageHandler}
+              />
+            </label>
+          </IconButton>
+        </div>
+        <button
+          type='submit'
+          disabled={!tweetMsg}
+          className={tweetMsg ? styles.tweet_sendBtn : styles.tweet_sendDisableBtn}
+        >
+          Tweet
+        </button>
+      </form>
+    </>
   );
 };
 
