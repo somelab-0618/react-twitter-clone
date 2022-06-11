@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import TweetInput from './TweetInput';
 import styles from './Feed.module.css';
+import Post from './Post';
 
 const Feed: React.FC = () => {
   const [posts, setPosts] = useState([
@@ -41,7 +42,7 @@ const Feed: React.FC = () => {
       Feed
       <TweetInput />
       {posts.map((post) => (
-        <p>{post.id}</p>
+        <Post key={post.id} data={post} />
       ))}
     </div>
   );
