@@ -39,11 +39,14 @@ const Feed: React.FC = () => {
 
   return (
     <div className={styles.feed}>
-      Feed
       <TweetInput />
-      {posts.map((post) => (
-        <Post key={post.id} data={post} />
-      ))}
+      {posts[0]?.id && (
+        <>
+          {posts.map((post) => (
+            <Post key={post.id} data={post} />
+          ))}
+        </>
+      )}
     </div>
   );
 };

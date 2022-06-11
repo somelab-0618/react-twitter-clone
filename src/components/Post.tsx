@@ -6,7 +6,7 @@ import { db } from '../firebase';
 import firebase from 'firebase/app';
 import { Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
-import { MessageOutlined, SendOutlined } from '@material-ui/icons';
+import SendIcon from '@material-ui/icons/Send';
 
 interface PROPS {
   data: {
@@ -20,7 +20,19 @@ interface PROPS {
 }
 
 const Post: React.FC<PROPS> = (props) => {
+  const user = useSelector(selectUser); // ログインしているユーザー
   const { data } = props;
+  const [comment, setComment] = useState('');
+  const newComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    db.collection('posts').doc(data.id).collection('comments').add({
+      username: user.displayName,
+      avatar: user.photoUrl,
+      text: comment,
+      timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    setComment('');
+  };
   return (
     <div className={styles.post}>
       <div className={styles.avatar}>
@@ -45,6 +57,25 @@ const Post: React.FC<PROPS> = (props) => {
             <img src={data.image} alt='tweet' />
           </div>
         )}
+        <form onSubmit={newComment}>
+          <div className={styles.post_form}>
+            <input
+              className={styles.post_input}
+              type='text'
+              placeholder='Type new comment...'
+              value={comment}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setComment(e.target.value)
+              }
+            />
+            <button
+              type='submit'
+              className={comment ? styles.post_button : styles.post_buttonDisable}
+            >
+              <SendIcon className={styles.post_sendIcon} />
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
